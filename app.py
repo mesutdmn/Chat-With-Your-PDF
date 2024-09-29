@@ -44,7 +44,7 @@ for message in st.session_state.messages:
 if question:= st.chat_input(placeholder="Ask a question", disabled= not chat_active):
     st.chat_message("user").markdown(question)
 
-    st.session_state.messages.append({"role": "assistant", "content": question})
+    st.session_state.messages.append({"role": "user", "content": question})
 
     response = generate_response(question)
 
