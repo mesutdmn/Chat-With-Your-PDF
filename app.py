@@ -4,7 +4,7 @@ from app_graph import PdfChat
 st.set_page_config(page_title="Chat with your PDF", page_icon="🤖")
 st.image("./media/cover.jpg", use_column_width=True)
 if "messages" not in st.session_state:
-    st.session_state.messages =  [{"role": "bot", "content": "Time to talk about PDFs!"}]
+    st.session_state.messages =  [{"role": "assistant", "content": "Time to talk about PDFs!"}]
     st.session_state.app = None
 with st.sidebar:
     st.info("🤖 This app uses the OpenAI API to generate text, please provide your API key."
@@ -44,14 +44,14 @@ for message in st.session_state.messages:
 if question:= st.chat_input(placeholder="Ask a question", disabled= not chat_active):
     st.chat_message("user").markdown(question)
 
-    st.session_state.messages.append({"role": "user", "content": question})
+    st.session_state.messages.append({"role": "assistant", "content": question})
 
     response = generate_response(question)
 
     with st.chat_message("bot"):
         st.markdown(response)
 
-    st.session_state.messages.append({"role": "bot", "content": response})
+    st.session_state.messages.append({"role": "assistant", "content": response})
 
 
 
