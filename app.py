@@ -48,7 +48,7 @@ if question:= st.chat_input(placeholder="Ask a question", disabled= not chat_act
 
     response = generate_response(question)
 
-    with st.chat_message("bot"):
+    with st.chat_message("assistant"):
         st.markdown(response)
 
     st.session_state.messages.append({"role": "assistant", "content": response})
