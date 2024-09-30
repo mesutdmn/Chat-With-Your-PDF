@@ -20,6 +20,7 @@ def route(llm, memory):
      Firstly take a deep breath and read the message carefully.
      If it is not english, convert it to english first, so u can better understand.
      If user asking about someone, firstly check the vectorstore.
+     The question might look like a general question, but it may be about a specific document in the vectorstore.
      Don't mistake between the vectorstore and memory, question may be about a document in the vectorstore.
      If the message requires more detailed or additional information that may be found in the stored documents within the vector database, return vectorstore.
      If the message references previous parts of the conversation or context that has already been discussed, or just daily talk, return memory.

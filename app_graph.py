@@ -21,18 +21,22 @@ class PdfChat:
         self.model = ChatOpenAI(api_key=api_key, model="gpt-4o-mini-2024-07-18", temperature=0)  # minimum costing model
         builder = StateGraph(GraphState)
         builder.add_node("retrieve", self.retrieve_node)
-        builder.add_node("boost_retrieve", self.boost_retrieve)
+        builder.add_node("boost_question", self.boost_question)
+        builder.add_node("structer_document", self.structer_document)
         builder.add_node("generate_with_rag", self.generate_with_doc)
         builder.add_node("generate", self.generate_wo_doc)
-        builder.set_conditional_entry_point(
+
+        builder.set_entry_point("boost_question")
+        builder.add_conditional_edges(
+            "boost_question",
             self.decide_retrieve,
             {
                 "retrieve": "retrieve",
                 "generate": "generate"
             }
         )
-        builder.add_edge("retrieve", "boost_retrieve")
-        builder.add_edge("retrieve", "generate_with_rag")
+        builder.add_edge("retrieve", "structer_document")
+        builder.add_edge("structer_document", "generate_with_rag")
         builder.add_edge("generate_with_rag", END)
         builder.add_edge("generate", END)
 
@@ -40,6 +44,7 @@ class PdfChat:
 
         self.graph = builder.compile()
 
+        self.graph.get_graph().draw_mermaid_png(output_file_path="graph.png")
         self.memory = ConversationBufferMemory()
 
     def decide_retrieve(self, state: GraphState):
@@ -51,9 +56,9 @@ class PdfChat:
         else:
             return "generate"
 
-    def boost_retrieve(self, state: GraphState):
+    def boost_question(self, state: GraphState):
         question = state["question"]
-
+        memory = self.memory.load_memory_variables({})
         prompt = """You are an assistant in a question-answering tasks.
                     You have to boost the question to help search in vectorstore.
                     Don't make up random names.
@@ -67,9 +72,10 @@ class PdfChat:
         prompt = PromptTemplate.from_template(prompt)
         chain = prompt | self.model | StrOutputParser()
 
-        question = chain.invoke({"question": question, "memory": self.memory.load_memory_variables({})})
-
+        question = chain.invoke({"question": question, "memory": memory})
+        print("Boosted question:", question)
         return {"question": question}
+
 
     def retrieve_node(self, state: GraphState):
         question = state["question"]
@@ -80,6 +86,29 @@ class PdfChat:
 
         return {"documents": documents}
 
+    def structer_document(self, state: GraphState):
+        documents = state["documents"]
+        question = state["question"]
+        documents = [doc.page_content for doc in documents]
+
+        prompt = """You are an expert assistant for question-answering tasks. 
+                    You have to restructure the documents for the question. 
+                    Keep it short, only knowledge that is relevant to the question.
+                    Don't make up random names.
+                    Return a better structured document for better understanding.
+                    \n
+                    Documents: {documents}
+                    \n
+                    Question: {question}
+                """
+        prompt = PromptTemplate.from_template(prompt)
+        chain = prompt | self.model | StrOutputParser()
+
+        document = chain.invoke({"question": question, "documents": documents})
+
+        print(document)
+        return  {"documents": document}
+
     def generate_with_doc(self, state: GraphState):
         documents = state["documents"]
         question = state["question"]
@@ -87,12 +116,9 @@ class PdfChat:
 
         prompt = """"You are an expert assistant for question-answering tasks. 
                     Use the provided documents as context to extract and answer the question. 
-                    Read the context carefully, processing each document individually. 
-                    Pay close attention to the source of the information—ensure that your answer is specific to the correct document, and do not mix details between documents. 
-                    Focus on structured data like phone numbers, addresses, email addresses, or URLs, and extract them exactly as provided. 
-                    If such information is hidden within the context, identify and use it. 
-                    If the answer is not present, respond with 'I don't know.' 
-                    Keep your answer concise and limited to three sentences.
+
+                    If the answer is not mentioned in context, respond with 'I don't know.' 
+                    Keep your limited to three sentences.
                     Answer in the language of the question.
 
                     Conversation history: {memory}
