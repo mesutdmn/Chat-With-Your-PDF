@@ -21,7 +21,7 @@ class PdfChat:
         self.model = ChatOpenAI(api_key=api_key, model="gpt-4o-mini-2024-07-18", temperature=0)  # minimum costing model
         builder = StateGraph(GraphState)
         builder.add_node("retrieve", self.retrieve_node)
-        #builder.add_node("boost_retrieve", self.boost_retrieve)
+        builder.add_node("boost_retrieve", self.boost_retrieve)
         builder.add_node("generate_with_rag", self.generate_with_doc)
         builder.add_node("generate", self.generate_wo_doc)
         builder.set_conditional_entry_point(
@@ -31,7 +31,7 @@ class PdfChat:
                 "generate": "generate"
             }
         )
-        #builder.add_edge("retrieve", "boost_retrieve")
+        builder.add_edge("retrieve", "boost_retrieve")
         builder.add_edge("retrieve", "generate_with_rag")
         builder.add_edge("generate_with_rag", END)
         builder.add_edge("generate", END)
@@ -55,9 +55,11 @@ class PdfChat:
         question = state["question"]
 
         prompt = """You are an assistant in a question-answering tasks.
-                    \n You have to boost the question to help search in vectorstore.
-                    \n Return a better structred question, but don't make it longer
+                    You have to boost the question to help search in vectorstore.
+                    Return a better structred question, but don't make it longer
+                    \n
                     Conversation history: {memory}
+                    \n
                     Question: {question}
                 """
         prompt = PromptTemplate.from_template(prompt)
