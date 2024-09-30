@@ -115,13 +115,16 @@ class PdfChat:
 
         prompt = """"You are an expert assistant for question-answering tasks. 
                     Use the provided documents as context to extract and answer the question. 
-
+                    Don't be lazy, check every details in the Context.
                     If the answer is not mentioned in context, respond with 'I don't know.' 
                     Keep your limited to three sentences.
-
+                    \n
                     Conversation history: {memory}
+                    \n
                     Context: {context}
+                    \n
                     Question: {question} 
+                    \n
                     Answer:
                 """
         prompt = PromptTemplate.from_template(prompt)
