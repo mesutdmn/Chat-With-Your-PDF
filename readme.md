@@ -78,5 +78,3 @@ streamlit==1.38.0
 
 🌟 **Screenshots**:
 ![main_page](https://github.com/user-attachments/assets/5f71b385-d3a9-42c2-a89e-92c28d594bdf)
-
-```
