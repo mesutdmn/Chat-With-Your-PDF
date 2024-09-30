@@ -9,15 +9,16 @@ from langchain.memory import ConversationBufferMemory
 from router import route, RouteQuery
 from ingestion import PDFIngestor
 
+
 class GraphState(TypedDict):
     question: str
     response: str
     documents: List[str]
 
+
 class PdfChat:
     def __init__(self, api_key, retriever):
-        self.model = ChatOpenAI(api_key=api_key, model="gpt-4o-mini-2024-07-18", temperature=0) # minimum costing model
-
+        self.model = ChatOpenAI(api_key=api_key, model="gpt-4o-mini-2024-07-18", temperature=0)  # minimum costing model
         builder = StateGraph(GraphState)
         builder.add_node("retrieve", self.retrieve_node)
         builder.add_node("boost_retrieve", self.boost_retrieve)
@@ -40,6 +41,7 @@ class PdfChat:
         self.graph = builder.compile()
 
         self.memory = ConversationBufferMemory()
+
     def decide_retrieve(self, state: GraphState):
         question = state["question"]
         memory = self.memory.load_memory_variables({})
@@ -75,17 +77,19 @@ class PdfChat:
         return {"documents": documents}
 
     def generate_with_doc(self, state: GraphState):
+        print("generate_with_doc")
         documents = state["documents"]
         question = state["question"]
         memory = self.memory.load_memory_variables({})
 
         prompt = """"You are an expert assistant for question-answering tasks. 
-                    1. Use the provided context to extract and answer the question. 
-                    2. Pay close attention to structured data like phone numbers, email addresses, or URLs, and extract them exactly as provided. 
-                    3. If such information is hidden within the context without clear tags or labels, identify and use it. 
-                    4. If the answer is not present, respond with 'I don't know.' 
-                    5. Keep your answer concise and limited to three sentences.
-                    
+                     Use the provided documents as context to extract and answer of the question. 
+                     If such information is hidden within the context without clear tags or labels, identify and use it.
+                     For this firstly determine what is in context one by one. 
+                     Pay close attention to structured data like phone numbers, email addresses, or URLs, and extract them exactly as provided. 
+                     If the answer is not present, respond with 'I don't know.' 
+                     Keep your answer concise and limited to three sentences.
+
                     Conversation history: {memory}
                     Context: {context}
                     Question: {question} 
@@ -95,13 +99,17 @@ class PdfChat:
         chain = prompt | self.model | StrOutputParser()
 
         response = chain.invoke({"memory": memory, "question": question, "context": documents})
+
         self.memory.save_context(inputs={"input": question}, outputs={"output": response})
 
+        for doc in documents:
+            print(doc.page_content.replace("\n", " "))
         return {"response": response}
 
     def generate_wo_doc(self, state: GraphState):
         question = state["question"]
-        prompt = """You are an assistant for question-answering tasks. If you don't know the answer, just say that you don't know.
+        prompt = """You are an assistant for question-answering tasks. 
+                    If you don't know the answer, just say that you don't know.
                     Don't forget to check previous conversations for context.
                     Use three sentences maximum and keep the answer concise. 
                     Conversation history: {memory} 
@@ -115,4 +123,3 @@ class PdfChat:
         self.memory.save_context(inputs={"input": question}, outputs={"output": response})
 
         return {"response": response}
-
