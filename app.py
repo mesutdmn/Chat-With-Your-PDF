@@ -44,10 +44,11 @@ with st.sidebar:
 
         chat_active = True
     else:
-        if developer_mode:
-            openai_key = st.secrets["OpenAI_API_KEY"]
         chat_active = False
 
+    if developer_mode:
+        openai_key = st.secrets["OpenAI_API_KEY"]
+        
     pdf_files = st.file_uploader("Upload PDFs", type=["pdf"], accept_multiple_files=True)
 
 def initialize_ingestor(pdf_files):
