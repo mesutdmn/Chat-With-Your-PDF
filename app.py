@@ -35,20 +35,19 @@ with st.sidebar:
             "\n If you don't have an API key, you can get one [here](https://platform.openai.com/signup)."
             "\n You can also find the source code for this app [here](https://github.com/mesutdmn/Chat-With-Your-PDF)"
             "\n App keys are not stored or saved in any way.")
-    openai_key = st.text_input("OpenAI API Key", type="password")
+    openai_key_input = st.text_input("OpenAI API Key", type="password")
     developer_mode = st.checkbox("I don't have key, use developer's money 😓", value=False)
-    st.markdown(button_html, unsafe_allow_html=True)
+    openai_key = openai_key_input or st.secrets["OpenAI_API_KEY"] if not developer_mode else ""
+
     st.divider()
-    if (len(openai_key) < 1) or not developer_mode:
+    if (len(openai_key) < 1):
         st.error("Please enter your OpenAI API key")
 
         chat_active = True
     else:
         chat_active = False
-
-    if developer_mode:
-        openai_key = st.secrets["OpenAI_API_KEY"]
-        
+    st.markdown(button_html, unsafe_allow_html=True)
+    st.divider()
     pdf_files = st.file_uploader("Upload PDFs", type=["pdf"], accept_multiple_files=True)
 
 def initialize_ingestor(pdf_files):
