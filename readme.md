@@ -18,6 +18,7 @@ This project is a **Retrieval-Augmented Generation (RAG)**-based AI chatbot, cap
 - **LangGraph**: LangGraph is used to generate the graph structure of the chain, which is then used to enrich the user's questions with relevant information from the PDF files.
 
 🕸️ **Graph Map**
+
 ![graph_output](https://github.com/user-attachments/assets/0fea4277-414d-40c0-a9e3-0cbc0416a0e9)
 
 🎯 **Use Cases:**
