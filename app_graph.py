@@ -66,7 +66,7 @@ class PdfChat:
         chain = prompt | self.model | StrOutputParser()
 
         question = chain.invoke({"question": question, "memory": self.memory.load_memory_variables({})})
-
+        print("Boosted question:", question)
         return {"question": question}
 
     def retrieve_node(self, state: GraphState):
