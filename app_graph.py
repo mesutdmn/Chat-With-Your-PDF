@@ -21,7 +21,7 @@ class PdfChat:
         self.model = ChatOpenAI(api_key=api_key, model="gpt-4o-mini-2024-07-18", temperature=0)  # minimum costing model
         builder = StateGraph(GraphState)
         builder.add_node("retrieve", self.retrieve_node)
-        builder.add_node("boost_retrieve", self.boost_retrieve)
+        #builder.add_node("boost_retrieve", self.boost_retrieve)
         builder.add_node("generate_with_rag", self.generate_with_doc)
         builder.add_node("generate", self.generate_wo_doc)
         builder.set_conditional_entry_point(
@@ -31,8 +31,8 @@ class PdfChat:
                 "generate": "generate"
             }
         )
-        builder.add_edge("retrieve", "boost_retrieve")
-        builder.add_edge("boost_retrieve", "generate_with_rag")
+        #builder.add_edge("retrieve", "boost_retrieve")
+        builder.add_edge("retrieve", "generate_with_rag")
         builder.add_edge("generate_with_rag", END)
         builder.add_edge("generate", END)
 
