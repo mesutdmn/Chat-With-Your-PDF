@@ -77,7 +77,6 @@ class PdfChat:
         return {"documents": documents}
 
     def generate_with_doc(self, state: GraphState):
-        print("generate_with_doc")
         documents = state["documents"]
         question = state["question"]
         memory = self.memory.load_memory_variables({})
@@ -102,8 +101,6 @@ class PdfChat:
 
         self.memory.save_context(inputs={"input": question}, outputs={"output": response})
 
-        for doc in documents:
-            print(doc.page_content.replace("\n", " "))
         return {"response": response}
 
     def generate_wo_doc(self, state: GraphState):
