@@ -72,7 +72,7 @@ class PdfChat:
         chain = prompt | self.model | StrOutputParser()
 
         question = chain.invoke({"question": question, "memory": memory})
-        print("Boosted question:", question)
+
         return {"question": question}
 
 
@@ -105,7 +105,6 @@ class PdfChat:
 
         document = chain.invoke({"question": question, "documents": documents})
 
-        print(document)
         return  {"documents": document}
 
     def generate_with_doc(self, state: GraphState):
