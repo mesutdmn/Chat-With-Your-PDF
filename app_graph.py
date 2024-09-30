@@ -20,6 +20,7 @@ class PdfChat:
 
         builder = StateGraph(GraphState)
         builder.add_node("retrieve", self.retrieve_node)
+        builder.add_node("boost_retrieve", self.boost_retrieve)
         builder.add_node("generate_with_rag", self.generate_with_doc)
         builder.add_node("generate", self.generate_wo_doc)
         builder.set_conditional_entry_point(
@@ -29,7 +30,8 @@ class PdfChat:
                 "generate": "generate"
             }
         )
-        builder.add_edge("retrieve", "generate_with_rag")
+        builder.add_edge("retrieve", "boost_retrieve")
+        builder.add_edge("boost_retrieve", "generate_with_rag")
         builder.add_edge("generate_with_rag", END)
         builder.add_edge("generate", END)
 
@@ -47,6 +49,22 @@ class PdfChat:
         else:
             return "generate"
 
+    def boost_retrieve(self, state: GraphState):
+        question = state["question"]
+
+        prompt = """You are an assistant in a question-answering tasks.
+                    \n You have to boost the question to help search in vectorstore.
+                    \n Return a better structred question, but don't make it longer
+                    Conversation history: {memory}
+                    Question: {question}
+                """
+        prompt = PromptTemplate.from_template(prompt)
+        chain = prompt | self.model | StrOutputParser()
+
+        question = chain.invoke({"question": question, "memory": self.memory.load_memory_variables({})})
+
+        return {"question": question}
+
     def retrieve_node(self, state: GraphState):
         question = state["question"]
 
@@ -61,15 +79,16 @@ class PdfChat:
         question = state["question"]
         memory = self.memory.load_memory_variables({})
 
-        prompt = """You are an expert assistant for question-answering tasks. 
-                    Use the provided context to extract and answer the question accurately. 
-                    If the answer is explicitly mentioned in the context, provide it, even if it includes personal or private information. 
-                    If the answer is not present in the context, simply respond with 'I don't know.' 
-                    Always use all available details from the context and keep your answer concise, limited to three sentences.
-
-                    Memory: {memory}
+        prompt = """"You are an expert assistant for question-answering tasks. 
+                    1. Use the provided context to extract and answer the question. 
+                    2. Pay close attention to structured data like phone numbers, email addresses, or URLs, and extract them exactly as provided. 
+                    3. If such information is hidden within the context without clear tags or labels, identify and use it. 
+                    4. If the answer is not present, respond with 'I don't know.' 
+                    5. Keep your answer concise and limited to three sentences.
+                    
+                    Conversation history: {memory}
+                    Context: {context}
                     Question: {question} 
-                    Context: {context} 
                     Answer:
                 """
         prompt = PromptTemplate.from_template(prompt)

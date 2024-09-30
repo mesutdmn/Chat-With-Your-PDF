@@ -12,7 +12,7 @@ class PDFIngestor:
         self.docs_list = self.get_docs()
 
         self.text_splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(
-            chunk_size=300, chunk_overlap=0
+            chunk_size=200, chunk_overlap=0
         )
         self.doc_splits = self.text_splitter.split_documents(self.docs_list)
 
@@ -35,4 +35,4 @@ class PDFIngestor:
         return docs_list
 
     def get_retriever(self):
-        return self.vectorstore.as_retriever(search_type="mmr", search_kwargs={"k": 2})
+        return self.vectorstore.as_retriever(search_type="similarity",search_kwargs={"k": 3})

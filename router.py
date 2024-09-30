@@ -20,7 +20,7 @@ def route(llm, memory):
      If user asking about someone, firstly check the vectorstore.
      If the message requires more detailed or additional information that may be found in the stored documents within the vector database, return vectorstore.
      If the message references previous parts of the conversation or context that has already been discussed, or just daily talk, return memory.
-    
+
     Conversation history:
     {memory_str}
     """
