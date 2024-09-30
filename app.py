@@ -37,7 +37,7 @@ with st.sidebar:
             "\n App keys are not stored or saved in any way.")
     openai_key_input = st.text_input("OpenAI API Key", type="password")
     developer_mode = st.checkbox("I don't have key, use developer's money 😓", value=False)
-    openai_key = openai_key_input or st.secrets["OpenAI_API_KEY"] if not developer_mode else ""
+    openai_key = openai_key_input or (st.secrets["OpenAI_API_KEY"] if not developer_mode else "")
 
     st.divider()
     if (len(openai_key) < 1):
