@@ -39,13 +39,13 @@ with st.sidebar:
     developer_mode = st.checkbox("I don't have key, use developer's money 😓", value=False)
     openai_key = openai_key_input or st.secrets["OpenAI_API_KEY"] if developer_mode else ""
 
-    st.divider()
     if (len(openai_key) < 1):
         st.error("Please enter your OpenAI API key")
 
         chat_active = True
     else:
         chat_active = False
+    st.divider()
     st.markdown(button_html, unsafe_allow_html=True)
     st.divider()
     pdf_files = st.file_uploader("Upload PDFs", type=["pdf"], accept_multiple_files=True)
