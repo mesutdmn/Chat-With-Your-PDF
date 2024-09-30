@@ -19,7 +19,8 @@ This project is a **Retrieval-Augmented Generation (RAG)**-based AI chatbot, cap
 
 🕸️ **Graph Map**
 
-![graph_output](https://github.com/user-attachments/assets/0fea4277-414d-40c0-a9e3-0cbc0416a0e9)
+![graph_output](https://github.com/user-attachments/assets/7b332bc1-f6a1-472f-8a09-e4bc057d8d91)
+
 
 🎯 **Use Cases:**
 - **Research**: Quickly find relevant information from research papers and articles.
