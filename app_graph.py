@@ -56,7 +56,8 @@ class PdfChat:
 
         prompt = """You are an assistant in a question-answering tasks.
                     You have to boost the question to help search in vectorstore.
-                    Return a better structred question, but don't make it longer
+                    Don't make up random names.
+                    Return a better structred question for vectorstore search, but don't make it longer
                     \n
                     Conversation history: {memory}
                     \n
@@ -84,12 +85,13 @@ class PdfChat:
         memory = self.memory.load_memory_variables({})
 
         prompt = """"You are an expert assistant for question-answering tasks. 
-                     Use the provided documents as context to extract and answer of the question. 
-                     If such information is hidden within the context without clear tags or labels, identify and use it.
-                     For this firstly determine what is in context one by one. 
-                     Pay close attention to structured data like phone numbers, email addresses, or URLs, and extract them exactly as provided. 
-                     If the answer is not present, respond with 'I don't know.' 
-                     Keep your answer concise and limited to three sentences.
+                    Use the provided documents as context to extract and answer the question. 
+                    Read the context carefully, processing each document individually. 
+                    Pay close attention to the source of the information—ensure that your answer is specific to the correct document, and do not mix details between documents. 
+                    Focus on structured data like phone numbers, addresses, email addresses, or URLs, and extract them exactly as provided. 
+                    If such information is hidden within the context, identify and use it. 
+                    If the answer is not present, respond with 'I don't know.' 
+                    Keep your answer concise and limited to three sentences.
 
                     Conversation history: {memory}
                     Context: {context}
