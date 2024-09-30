@@ -18,6 +18,7 @@ def route(llm, memory):
     system = f"""The user has sent a new message. You are an expert at routing the message.
      Based on the content of the message, determine the next step by following these guidelines:
      Firstly take a deep breath and read the message carefully.
+     If it is not english, convert it to english first, so u can better understand.
      If user asking about someone, firstly check the vectorstore.
      Don't mistake between the vectorstore and memory, question may be about a document in the vectorstore.
      If the message requires more detailed or additional information that may be found in the stored documents within the vector database, return vectorstore.

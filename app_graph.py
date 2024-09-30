@@ -58,6 +58,7 @@ class PdfChat:
                     You have to boost the question to help search in vectorstore.
                     Don't make up random names.
                     Return a better structred question for vectorstore search, but don't make it longer
+                    Use language of the question.
                     \n
                     Conversation history: {memory}
                     \n
@@ -77,6 +78,8 @@ class PdfChat:
         if not documents:
             return "I couldn't find any relevant documents. Can you please rephrase your question?"
 
+        for doc in documents:
+            print(doc.page_content.replace("\n", " "))
         return {"documents": documents}
 
     def generate_with_doc(self, state: GraphState):
@@ -92,6 +95,7 @@ class PdfChat:
                     If such information is hidden within the context, identify and use it. 
                     If the answer is not present, respond with 'I don't know.' 
                     Keep your answer concise and limited to three sentences.
+                    Answer in the language of the question.
 
                     Conversation history: {memory}
                     Context: {context}
@@ -113,6 +117,7 @@ class PdfChat:
                     If you don't know the answer, just say that you don't know.
                     Don't forget to check previous conversations for context.
                     Use three sentences maximum and keep the answer concise. 
+                    Answer in the language of the question.
                     Conversation history: {memory} 
                     Question: {question}
                 """
