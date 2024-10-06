@@ -5,6 +5,9 @@
 
 This project is a **Retrieval-Augmented Generation (RAG)**-based AI chatbot, capable of querying PDF documents using the **OpenAI API** integrated with **LangChain**. With **LangGraph** and **FAISS**, vector-based data queries are performed on PDF files, allowing natural language interaction with the data.
 
+📄 **Medium Article**: [How to Create a RAG-based PDF Chatbot with LangChain
+](https://dumanmesut.medium.com/how-to-create-a-rag-based-pdf-chatbot-with-langchain-98f38030f91e)
+
 🤖 **Live Demo**: [RAG PDF Chatbot](https://rag-chat-pdf.streamlit.app/)
 
 ⚙️ **How it Works:**
