@@ -16,7 +16,7 @@ This project is a **Retrieval-Augmented Generation (RAG)**-based AI chatbot, cap
 
 📂 **Project Structure:**
 - **LangChain**: LangChain is used to process the information within the PDF files and pass it to the language model. The user's questions are enriched with relevant sections from the PDF to produce more accurate answers.
-- **Vectorization**: FAISS is used to vectorize the PDF files, allowing for efficient and accurate data retrieval.
+- **Vectorization**: FAISS is used to vectorize PDF files, allowing for efficient and accurate data retrieval.
 - **OPENAI API**: The OpenAI API is used to generate responses to the user's questions based on the information extracted from the PDF files.
 - **LangGraph**: LangGraph is used to generate the graph structure of the chain, which is then used to enrich the user's questions with relevant information from the PDF files.
 
@@ -74,11 +74,12 @@ streamlit==1.38.0
 4. Ask questions related to the content of the PDF file, and the chatbot will provide answers based on the information in the document.
 5. Enjoy interacting with the RAG PDF Chatbot!
 
-📝 **Note**: The chatbot is still in development, and improvements are being made to enhance its performance and capabilities. If you encounter any issues or have suggestions for improvement, please feel free to open an issue or submit a pull request, or contact me on linkedin.
+📝 **Note**: The chatbot is still in development, and improvements are being made to enhance its performance and capabilities. If you encounter any issues or have suggestions for improvement, please feel free to open an issue submit a pull request, or contact me on LinkedIn.
 
 👨‍💻 **Developed by**: [Mesut Duman](https://www.linkedin.com/in/mesut-duman/)
 
 📄 **License**: This project is licensed under the Apache License 2.0.
 
-🌟 **Screenshots**:
-![main_page](https://github.com/user-attachments/assets/5f71b385-d3a9-42c2-a89e-92c28d594bdf)
+### 📺 **Demo Video**
+
+https://github.com/user-attachments/assets/1167fc5a-24d4-4a5e-8db4-11a321523685
